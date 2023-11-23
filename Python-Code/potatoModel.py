@@ -115,4 +115,8 @@ history = model.fit(
 
 
 
+<<<<<<< HEAD
 model.save("Version_One_Model")
+=======
+model.save("Version_One_Model 2")
+>>>>>>> 6ef0021 (server can now send back data)

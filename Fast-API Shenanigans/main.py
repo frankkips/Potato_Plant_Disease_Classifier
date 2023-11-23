@@ -1,36 +1,71 @@
-from enum import Enum
-from fastapi import FastAPI
+from fastapi import FastAPI , File, UploadFile
+import uvicorn
+import numpy as np
+from io import BytesIO
+from PIL import Image
+import tensorflow as tf
+import requests
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:5173"
+]
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = origins,
+    allow_credentials = True,
+    allow_methods = ["*"],
+    allow_headers = ["*"],
+)
 
-class AvailableCuisines(str, Enum):
-    indian = "indian"
-    chinese = "chinese"
-    italian = "italian"
+model_path = 'Version_One_Model'
+model = tf.keras.models.load_model(model_path)
 
-food_items = {
-    'indian':["Samosa","Dosa"],
-    'chinese':["Spagheti", "Rice"],
-    'italian':["Pizza","Ravioli" ]
-}
-
-path = "/get_items/{cuisine}"
-
-
-valid_cuisines = food_items.keys()
+CLASS_NAMES = ["Early blight", "Late blight", "Healthy"]
 
 
-@app.get(path)
-async def get_items(cuisine: AvailableCuisines):
-    return food_items.get(cuisine)
 
-coupon_codes = {
-    1: "10%",
-    2: "20%",
-    3: "30%"
-}
 
-path_coupons = "/get_coupons/{code}"
+# endpoint = "http://localhost:8605/v1/models/potato_model:predict"
 
-@app.get(path_coupons)
-async def get_items(code: int):
+@app.get("/ping")
+async def ping():
+    return "Hello I'm Alive"
+
+
+def read_file_as_image(data) -> np.ndarray:
+    image = np.array(Image.open(BytesIO(data)))
+    return image
+
+@app.post("/predict")
+async def predict(
+    file: UploadFile = File(...)
+):
+    image = read_file_as_image(await file.read())
+    image_batch = np.expand_dims(image, 0)
+
+    prediction = model.predict(image_batch)
+    # json_data = {
+    #     "instances": image_batch.tolist()
+    # }
+    # response = requests.post(endpoint,json=json_data)
+    # prediction = response.json()["predictions"][0]
+
+    # prediction_class = CLASS_NAMES[np.argmax(prediction)]
+    # confidence = np.max(prediction)
+    prediction_class = CLASS_NAMES[np.argmax(prediction[0])]
+    confidence = np.max(prediction[0])
+    
+    return {
+        'class': prediction_class,
+        'confidence': float(confidence)
+    }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host = 'localhost', port = 8000)
