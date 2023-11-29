@@ -27,7 +27,7 @@ app.add_middleware(
 model_path = 'Version_One_Model'
 model = tf.keras.models.load_model(model_path)
 
-CLASS_NAMES = ["Early blight", "Late blight", "Healthy"]
+CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
 
 
 
