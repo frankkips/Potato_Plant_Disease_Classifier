@@ -24,15 +24,18 @@ app.add_middleware(
     allow_headers = ["*"],
 )
 
-model_path = 'Version_One_Model'
+model_potato_path = 'Version_One_Model'
+modelpotato = tf.keras.models.load_model(model_potato_path)
+
+model_path = 'Leaf_Model'
 model = tf.keras.models.load_model(model_path)
 
-CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
+
+CLASS_POTATO = ["Early Blight", "Late Blight", "Healthy"]
+
+CLASS_NAMES = ["Leaf", "Not Potato"]
 
 
-
-
-# endpoint = "http://localhost:8605/v1/models/potato_model:predict"
 
 @app.get("/ping")
 async def ping():
@@ -51,21 +54,23 @@ async def predict(
     image_batch = np.expand_dims(image, 0)
 
     prediction = model.predict(image_batch)
-    # json_data = {
-    #     "instances": image_batch.tolist()
-    # }
-    # response = requests.post(endpoint,json=json_data)
-    # prediction = response.json()["predictions"][0]
-
-    # prediction_class = CLASS_NAMES[np.argmax(prediction)]
-    # confidence = np.max(prediction)
     prediction_class = CLASS_NAMES[np.argmax(prediction[0])]
     confidence = np.max(prediction[0])
     
-    return {
+    if prediction_class == 'Leaf':
+        prediction = modelpotato.predict(image_batch)
+        prediction_class = CLASS_POTATO[np.argmax(prediction[0])]
+        confidence = np.max(prediction[0])
+
+        return {
         'class': prediction_class,
         'confidence': float(confidence)
     }
+    else:
+        return {
+            'class': prediction_class,
+            'confidence': float(confidence)
+        }
 
 if __name__ == "__main__":
     uvicorn.run(app, host = 'localhost', port = 8000)
