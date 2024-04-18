@@ -28,19 +28,11 @@ model_potato_path = 'Version_One_Model'
 modelpotato = tf.keras.models.load_model(model_potato_path)
 
 model_path = 'Leaf_Model'
-model = tf.keras.models.load_model(model_path)
+model = tf.keras.models.load_model(model_path)             
 
 
 CLASS_POTATO = ["Early Blight", "Late Blight", "Healthy"]
-
 CLASS_NAMES = ["Leaf", "Not Potato"]
-
-
-
-@app.get("/ping")
-async def ping():
-    return "Hello I'm Alive"
-
 
 def read_file_as_image(data) -> np.ndarray:
     image = np.array(Image.open(BytesIO(data)))
