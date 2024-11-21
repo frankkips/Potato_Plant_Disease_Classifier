@@ -12,7 +12,14 @@ from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost",
     "http://localhost:3000",
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://potato-det.vercel.app",
+    "http://100.100.121.178:5173",
+    "http://192.168.67.222:5173",
+    "http://10.42.0.242:5173",
+    "http://10.42.0.1:5173",
+    
+
 ]
 
 app = FastAPI()
@@ -31,7 +38,7 @@ model_path = 'Leaf_Model'
 model = tf.keras.models.load_model(model_path)             
 
 
-CLASS_POTATO = ["Early Blight", "Late Blight", "Healthy"]
+CLASS_POTATO = ["Early Blight", "Late Blight", "Healthy Leaf"]
 CLASS_NAMES = ["Leaf", "Not Potato"]
 
 def read_file_as_image(data) -> np.ndarray:
@@ -65,4 +72,7 @@ async def predict(
         }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host = 'localhost', port = 8000)
+    uvicorn.run(app, host = "0.0.0.0", port = 8000)
+
+
+
