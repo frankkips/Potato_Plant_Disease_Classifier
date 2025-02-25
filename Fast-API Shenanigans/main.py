@@ -31,10 +31,10 @@ app.add_middleware(
     allow_headers = ["*"],
 )
 
-model_potato_path = 'Version_One_Model'
+model_potato_path = 'Version_One_Model.keras'
 modelpotato = tf.keras.models.load_model(model_potato_path)
 
-model_path = 'Leaf'
+model_path = 'Leaf_Model.keras'
 model = tf.keras.models.load_model(model_path)             
 
 
