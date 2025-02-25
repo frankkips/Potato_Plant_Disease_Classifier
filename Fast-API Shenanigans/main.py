@@ -34,12 +34,12 @@ app.add_middleware(
 model_potato_path = 'Version_One_Model'
 modelpotato = tf.keras.models.load_model(model_potato_path)
 
-model_path = 'Leaf_Model'
+model_path = 'Leaf'
 model = tf.keras.models.load_model(model_path)             
 
 
 CLASS_POTATO = ["Early Blight", "Late Blight", "Healthy Leaf"]
-CLASS_NAMES = ["Leaf", "Not Potato"]
+CLASS_NAMES = ["Leaf", "Not Leaf"]
 
 def read_file_as_image(data) -> np.ndarray:
     image = np.array(Image.open(BytesIO(data)))
