@@ -2,5 +2,6 @@ fastapi
 uvicorn
 numpy
 pillow
-tensorflow
+tensorflow==2.14
+keras==2.14
 requests
